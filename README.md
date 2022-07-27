@@ -3,4 +3,4 @@ Working my way through the Functional Programming in Scala book by Michael Pilqu
 
 Proposed solutions for [Functional Programming in Scala second edition.](https://www.manning.com/books/functional-programming-in-scala-second-edition)
 
-And... [This official repository](https://github.com/fpinscala/fpinscala) should be your ground truth source of information when looking for imformation related to the code from this book.
+And!... [This official repository](https://github.com/fpinscala/fpinscala) should be your ground truth source of reference when looking for information related to the code from this book.
