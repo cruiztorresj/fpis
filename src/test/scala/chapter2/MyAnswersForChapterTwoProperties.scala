@@ -1,3 +1,5 @@
+package chapter2
+
 import org.scalacheck.Gen
 import org.scalacheck.Prop.forAll
 

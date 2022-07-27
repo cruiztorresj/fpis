@@ -3,6 +3,8 @@
 * Caleb Josue Ruiz Torres
 */
 
+package chapter2
+
 object MyAnswersForChapterTwo:
   // Exercise 2.1 (Optional)
   // Recursive function to get the nth fibonacci number
