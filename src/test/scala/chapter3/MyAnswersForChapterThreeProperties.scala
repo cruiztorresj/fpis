@@ -8,7 +8,7 @@ import MyAnswersForChapterThree._
 class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
 
   // Again, having a correct implementation already, will help us to use it as a Test Oracle.
-  property("Your Implementation for a list's tail") {
+  property("MyList's tail implementation") {
     forAll { (xs: List[Int]) =>
       // What's the tail of an empty List?
       // One can argue the tail of Nothing is Nothing, but the book says they will return to this matter at a later point.
@@ -21,7 +21,7 @@ class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
     }
   }
   
-  property("setHead implementation") {
+  property("MyList's setHead implementation") {
     forAll { (ss: List[String]) =>
       if ss.nonEmpty then
         val myList: MyList[String] = MyList(ss*)
@@ -31,3 +31,22 @@ class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
         true // Again, we are testing for non empty lists only
     }
   }
+  
+  property("MyList's drop implementation") {
+    forAll { (n: Int, xs: List[Int]) =>
+      val myList: MyList[Int] = MyList(xs*)
+      drop(myList, n) == MyList(xs.drop(n)*)
+    }
+  }
+  
+  // Predicate to be used for drop's while implementation
+  def isPair(a: Int): Boolean = a % 2 == 0
+  
+  property("MyList's dropWhile implementation") {
+    forAll { (xs: List[Int]) =>
+      val myList: MyList[Int] = MyList(xs*)
+      dropWhile(myList, isPair) == MyList(xs.dropWhile(isPair)*)
+    }
+  }
+  
+  

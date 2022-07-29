@@ -8,15 +8,29 @@ enum MyList[+A]:
 
 object MyList:
   
-  // I thought on making this definition tail recursive but at this point of the book we haven't defined tail
   def sum(ints: MyList[Int]): Int = ints match
     case Nil => 0
     case Cons(x, xs) => x + sum(xs)
+  
+  def sumTailRecursive(ints: MyList[Int]): Int =
+  	@annotation.tailrec
+  	def loop(acc: Int, ints: MyList[Int]): Int = ints match
+  	  case Nil => acc
+  	  case Cons(x, xs) => loop(acc + x, xs) 
+  	loop(0, ints)
   
   def product(ds: MyList[Double]): Double = ds match
     case Nil => 1.0
     case Cons(0.0, _) => 0.0
     case Cons(x, xs) => x * product(xs)
+  
+  def productTailRecursive(ds: MyList[Double]): Double =
+    @annotation.tailrec
+    def loop(acc: Double, ds: MyList[Double]): Double = ds match
+      case Nil => acc
+      case Cons(0.0, _) => 0.0
+      case Cons(d, ds) => loop(acc * d, ds)
+    loop(1.0, ds)
   
   def apply[A](as: A*): MyList[A] =
     if as.isEmpty then Nil
