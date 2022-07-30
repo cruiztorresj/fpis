@@ -35,3 +35,12 @@ object MyList:
   def apply[A](as: A*): MyList[A] =
     if as.isEmpty then Nil
     else Cons(as.head, apply(as.tail*))
+  
+  def append[A](as1: MyList[A], as2: MyList[A]): MyList[A] =
+    as1 match
+      case Nil => as2
+      case Cons(h, t) => Cons(h, append(t, as2))
+  
+  // This isn't in the book but I wanted to make sure about some parameterless function definitions.
+  def parameterlessFunctionThatReturnsTheIntSeven: Int = 7
+ 

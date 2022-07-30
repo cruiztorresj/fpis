@@ -49,4 +49,12 @@ class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
     }
   }
   
-  
+  property("MyList's init implementation") {
+    forAll { (ss: List[String]) =>
+      if ss.nonEmpty then
+        val myList: MyList[String] = MyList(ss*)
+        init(myList) == MyList(ss.init*)
+      else
+        true // init is not defined on empty lists, coming back to this later.
+    }
+  }
