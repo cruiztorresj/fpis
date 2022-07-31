@@ -24,7 +24,7 @@ class MyAnswersForChapterTwoProperties extends munit.ScalaCheckSuite:
   // `gt` function will return true only when the first parameter is **greater** than the second parameter
   // so this is OK `List(3, 2, 1)`
   // but this `List(3, 2, 2, 1)` is not.
-  // Having `gt` function's type. You are free to include `>=` in your definition, but the problem doesn't mention it.
+  // Having `gt` function's type. You are free to include `>=` in your definition, but this exercise doesn't mention it.
   // For testing purposes, `Test Oracle` strategy is being used. More information in the below link.
   // https://www.youtube.com/watch?v=Jhzc7fxY5lw
   

@@ -40,7 +40,7 @@ class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
   }
   
   // Predicate to be used for drop's while implementation
-  def isPair(a: Int): Boolean = a % 2 == 0
+  def isPair(n: Int): Boolean = n % 2 == 0
   
   property("MyList's dropWhile implementation") {
     forAll { (xs: List[Int]) =>
