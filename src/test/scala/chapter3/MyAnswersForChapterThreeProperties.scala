@@ -58,3 +58,33 @@ class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
         true // init is not defined on empty lists, coming back to this later.
     }
   }
+  
+  property("MyList's length implementation") {
+    forAll { (ds: List[String]) =>
+      val myList: MyList[String] = MyList(ds*)
+      length(myList) == ds.length
+    }
+  }
+  
+  // At this point I am wondering if it is safe to call `properties` to the tests we have been writing so far
+  // They don't look like properties to me, but statements of true nature.
+  property("MyList's sum implementation via foldLeft") {
+    forAll { (xs: List[Int]) =>
+      val myList: MyList[Int] = MyList(xs*)
+      sumViaFoldLeft(myList) == xs.sum
+    }
+  }
+  
+  property("MyList's product implementation via foldLeft") {
+    forAll { (ds: List[Double]) =>
+      val myList: MyList[Double] = MyList(ds*)
+      productViaFoldLeft(myList) == ds.product
+    }
+  }
+  
+  property("MyList's length implementation via foldLeft") {
+    forAll { (ss: List[String]) =>
+      val myList: MyList[String] = MyList(ss*)
+      lengthViaFoldLeft(myList) == ss.length
+    }
+  }  

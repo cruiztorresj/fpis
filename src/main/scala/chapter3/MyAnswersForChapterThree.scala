@@ -11,9 +11,10 @@ object MyAnswersForChapterThree:
   // Answer is `3`, Compiler warns about last case being unreachable.
 
   // Exercise 3.2
-  def tail[A](as: MyList[A]): MyList[A] = as match
-    case MyList.Nil => MyList.Nil
-    case MyList.Cons(a, as) => as
+  def tail[A](as: MyList[A]): MyList[A] =
+    as match
+      case MyList.Nil => MyList.Nil
+      case MyList.Cons(a, as) => as
   
   // Exercise 3.3
   def setHead[A](elem: A, as: MyList[A]): MyList[A] = MyList.Cons(elem, as)
@@ -32,7 +33,7 @@ object MyAnswersForChapterThree:
       as
     else
       @annotation.tailrec
-      def loop[A](counter: Int, as: MyList[A]): MyList[A] =
+      def loop(counter: Int, as: MyList[A]): MyList[A] =
         if counter == 1 then as
         else loop(counter - 1, tail(as))
       
@@ -55,11 +56,12 @@ object MyAnswersForChapterThree:
   
   def dropWhile[A](as: MyList[A], p: A => Boolean): MyList[A] =
     @annotation.tailrec
-    def loop(acc: MyList[A]): MyList[A] = acc match
-      case MyList.Nil => MyList.Nil
-      case MyList.Cons(h, t) =>
-        if p(h) then loop(t)
-        else acc
+    def loop(acc: MyList[A]): MyList[A] =
+      acc match
+        case MyList.Nil => MyList.Nil
+        case MyList.Cons(h, t) =>
+          if p(h) then loop(t)
+          else acc
     
     loop(as)
   
@@ -83,13 +85,40 @@ object MyAnswersForChapterThree:
   
   def init[A](as: MyList[A]): MyList[A] =
     @annotation.tailrec
-    def loop[A](acc: MyList[A], as: MyList[A]): MyList[A] = as match
-      case MyList.Nil => MyList.Nil // Most likely an exception should be thrown here
-      case MyList.Cons(h, MyList.Nil) => acc
-      case MyList.Cons(h, t) => loop(MyList.append(acc, MyList.Cons(h, MyList.Nil)), t)
+    def loop(acc: MyList[A], as: MyList[A]): MyList[A] =
+      as match
+        case MyList.Nil => MyList.Nil // Most likely an exception should be thrown here
+        case MyList.Cons(h, MyList.Nil) => acc
+        case MyList.Cons(h, t) => loop(MyList.append(acc, MyList.Cons(h, MyList.Nil)), t)
     
     loop(MyList.Nil, as)
     
-    // Exercise 3.7
+  // Exercise 3.7
     
+  /* For the time being I don't think product can be implemented in terms of foldRight
+  * to halt the recursion when finding zero, you can even try to modify `product` definition
+  * in order to first find if there is a zero element in the list and return zero without calling foldRight
+  * but in the worst case scenario it will require going through the entire list anyway.
+  * For the most general question, short-circuit will need to recurse the entire list.
+  */
     
+  // Exercise 3.8
+  /* Input parameter list is returned
+  * I suppose acc becomes the case for the Nil Constructor
+  * Amd `f` becomes the case for the `Cons` constructor
+  */
+    
+  // Exercise 3.9
+  def length[A](as: MyList[A]): Int = MyList.foldRight(as, 0, (a, b) => 1 + b)
+  
+  // Exercise 3.10
+  // Please find this solution in MyList's companion object. (ListingThreeDotOne.scala file)
+  
+  // Exercise 3.11
+  // {sum, product, length} via foldLeft
+  
+  def sumViaFoldLeft(ints: MyList[Int]): Int = MyList.foldLeft(ints, 0, (a, b) => a + b)
+  
+  def productViaFoldLeft(ds: MyList[Double]): Double = MyList.foldLeft(ds, 1.0, (a, b) => a * b)
+  
+  def lengthViaFoldLeft[A](as: MyList[A]): Int = MyList.foldLeft(as, 0, (a, b) => 1 + a)
