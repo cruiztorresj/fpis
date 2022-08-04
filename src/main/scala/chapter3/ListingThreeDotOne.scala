@@ -78,5 +78,32 @@ object MyList:
       case Nil => acc
       case Cons(h, t) => foldLeft(t, f(acc, h), f)
   
+  // Exercise 3.13 - (Optional) - Hard
+  // So, my English is broken. For this problem I understood folds need to be implemented based on each other.
+  // Let's start with foldRightViaFoldLeft so foldRight becomes stack-safe.
+  def foldRightViaFoldLeft[A, B](as: MyList[A], acc: B, f: (A, B) => B): B =
+    def invertAndCurry(f: (A, B) => B): B => (A => B) = a => b => f(b, a)
+    def uncurryInvertedFunction(f: B => A => B): (B, A) => B = (b, a) => f(b)(a)
+    
+    val invertedCurried = invertAndCurry(f)
+    val fInvertedUncurried = uncurryInvertedFunction(invertedCurried)
+    foldLeft(as, acc, fInvertedUncurried)
   
+  // Use cases for foldRight via foldLeft
+  def sumViaFoldRightInTermsOfFoldLeft(ns: MyList[Int]) = foldRightViaFoldLeft(ns, 0, (x, y) => x + y)
   
+  def productViaFoldRightInTermsOfFoldLeft(ds: MyList[Double]) = foldRightViaFoldLeft(ds, 1.0, _ * _)
+  
+  // foldLeftViaFoldRight
+  // Inner functions will be redefined here, ig you have time to spare on it.
+  // Maybe you can abstract over these redefinitions. (Is up to you)
+  def foldLeftViaFoldRight[A, B](as: MyList[A], acc: B, f: (B, A) => B): B =
+    def invertAndCurry(f: (B, A) => B): A => (B => B) = b => a => f(a, b)
+    def uncurryInvertedFunction(f: A => B => B): (A, B) => B = (a, b) => f(a)(b)
+    
+    val invertedCurried = invertAndCurry(f)
+    val fInvertedUncurried = uncurryInvertedFunction(invertedCurried)
+    foldRight(as, acc, fInvertedUncurried)
+
+  // Use case for foldLeft via foldRight
+  def lengthViaFoldLeftInTermsOfFoldRight[A](as: MyList[A]): Int = foldLeftViaFoldRight(as, 0, (a, b) => 1 + a)

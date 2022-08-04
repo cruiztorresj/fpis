@@ -8,7 +8,7 @@ import MyAnswersForChapterThree._
 class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
 
   // Again, having a correct implementation already, will help us to use it as a Test Oracle.
-  property("MyList's tail implementation") {
+  property("Exercise 3.2  - tail implementation") {
     forAll { (xs: List[Int]) =>
       // What's the tail of an empty List?
       // One can argue the tail of Nothing is Nothing, but the book says they will return to this matter at a later point.
@@ -21,7 +21,7 @@ class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
     }
   }
   
-  property("MyList's setHead implementation") {
+  property("Exercise 3.3  - setHead implementation") {
     forAll { (ss: List[String]) =>
       if ss.nonEmpty then
         val myList: MyList[String] = MyList(ss*)
@@ -32,7 +32,7 @@ class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
     }
   }
   
-  property("MyList's drop implementation") {
+  property("Exercise 3.4  - drop implementation") {
     forAll { (n: Int, xs: List[Int]) =>
       val myList: MyList[Int] = MyList(xs*)
       drop(myList, n) == MyList(xs.drop(n)*)
@@ -42,14 +42,14 @@ class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
   // Predicate to be used for drop's while implementation
   def isPair(n: Int): Boolean = n % 2 == 0
   
-  property("MyList's dropWhile implementation") {
+  property("Exercise 3.5  - dropWhile implementation") {
     forAll { (xs: List[Int]) =>
       val myList: MyList[Int] = MyList(xs*)
       dropWhile(myList, isPair) == MyList(xs.dropWhile(isPair)*)
     }
   }
   
-  property("MyList's init implementation") {
+  property("Exercise 3.6  - init implementation") {
     forAll { (ss: List[String]) =>
       if ss.nonEmpty then
         val myList: MyList[String] = MyList(ss*)
@@ -59,7 +59,7 @@ class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
     }
   }
   
-  property("MyList's length implementation") {
+  property("Exercise 3.9  - length implementation using foldRight") {
     forAll { (ds: List[String]) =>
       val myList: MyList[String] = MyList(ds*)
       length(myList) == ds.length
@@ -67,24 +67,45 @@ class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
   }
   
   // At this point I am wondering if it is safe to call `properties` to the tests we have been writing so far
-  // They don't look like properties to me, but statements of true nature.
-  property("MyList's sum implementation via foldLeft") {
+  // They don't look like properties to me, but statements of true nature.  
+  property("Exercise 3.11 - sum implementation using foldLeft") {
     forAll { (xs: List[Int]) =>
       val myList: MyList[Int] = MyList(xs*)
       sumViaFoldLeft(myList) == xs.sum
     }
   }
   
-  property("MyList's product implementation via foldLeft") {
+  property("Exercise 3.11 - product implementation using foldLeft") {
     forAll { (ds: List[Double]) =>
       val myList: MyList[Double] = MyList(ds*)
       productViaFoldLeft(myList) == ds.product
     }
   }
   
-  property("MyList's length implementation via foldLeft") {
+  property("Exercise 3.11 - length implementation using foldLeft") {
     forAll { (ss: List[String]) =>
       val myList: MyList[String] = MyList(ss*)
       lengthViaFoldLeft(myList) == ss.length
     }
-  }  
+  }
+  
+  property("Exercise 3.12 - reverse implementation") {
+    forAll { (ds: List[Double]) =>
+      val myList: MyList[Double] = MyList(ds*)
+      reverse(myList) == MyList(ds.reverse*)
+    }
+  }
+  
+  property("Exercise 3.12 - (Extra) - reverse implementation using foldRight") {
+    forAll { (xs: List[Int]) =>
+      val myList: MyList[Int] = MyList(xs*)
+      reverseViaFoldRight(myList) == MyList(xs.reverse*)
+    }
+  }
+  
+  property("Exercise 3.12 - (Extra) - reverse implementation using foldLeft") {
+    forAll { (ss: List[String]) =>
+      val myList: MyList[String] = MyList(ss*)
+      reverseViaFoldLeft(myList) == MyList(ss.reverse*)
+    }
+  }

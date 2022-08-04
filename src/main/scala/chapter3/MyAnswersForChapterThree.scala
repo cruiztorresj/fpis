@@ -105,7 +105,7 @@ object MyAnswersForChapterThree:
   // Exercise 3.8
   /* Input parameter list is returned
   * I suppose acc becomes the case for the Nil Constructor
-  * Amd `f` becomes the case for the `Cons` constructor
+  * And `f` becomes the case for the `Cons` constructor
   */
     
   // Exercise 3.9
@@ -122,3 +122,26 @@ object MyAnswersForChapterThree:
   def productViaFoldLeft(ds: MyList[Double]): Double = MyList.foldLeft(ds, 1.0, (a, b) => a * b)
   
   def lengthViaFoldLeft[A](as: MyList[A]): Int = MyList.foldLeft(as, 0, (a, b) => 1 + a)
+  
+  // Exercise 3.12
+  def reverse[A](as: MyList[A]): MyList[A] =
+    @annotation.tailrec
+    def loop[A](acc: MyList[A], as: MyList[A]): MyList[A] =
+      as match
+        case MyList.Nil => acc
+        case MyList.Cons(h, t) => loop(MyList.Cons(h, acc), t)
+      
+    loop(MyList.Nil, as)
+  
+  def reverseViaFoldRight[A](as: MyList[A]): MyList[A] =
+    MyList.foldRight(as, MyList.Nil: MyList[A], (a, b) => MyList.append(b, MyList.Cons(a, MyList.Nil)))
+  
+  def reverseViaFoldLeft[A](as: MyList[A]): MyList[A] =
+    MyList.foldLeft(as, MyList.Nil: MyList[A], (a, b) => MyList.append(MyList.Cons(b, MyList.Nil), a))
+  
+  // Exercise 3.13 - (Optional) - Hard
+  // Please find this solution in MyList's companion object. (ListingThreeDotOne.scala file)
+  
+  // Exercise 3.14
+  
+  
