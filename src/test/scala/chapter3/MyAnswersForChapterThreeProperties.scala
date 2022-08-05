@@ -1,3 +1,9 @@
+/**
+* MyAnswersForChapterThreeProperties.scala
+* Testing properties for answers to chapter 3 exercise solutions.
+* Caleb Josue Ruiz Torres
+*/
+
 package chapter3
 
 import org.scalacheck.Gen
@@ -107,5 +113,24 @@ class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
     forAll { (ss: List[String]) =>
       val myList: MyList[String] = MyList(ss*)
       reverseViaFoldLeft(myList) == MyList(ss.reverse*)
+    }
+  }
+  
+  property("Exercise 3.14 - append implementation using foldRight") {
+    forAll { (xs: List[Int], ys: List[Int]) =>
+      val myListFromXss: MyList[Int] = MyList(xs*)
+      val myListFromYss: MyList[Int] = MyList(ys*)
+      appendUsingFoldRight(myListFromXss, myListFromYss) == MyList(ys.:::(xs)*)
+    }
+  }
+  
+  property("Exercise 3.15 - concatenates implementation") {
+    forAll { (intss: List[List[Int]]) =>
+      val myIntss: MyList[MyList[Int]] = MyList(intss.map(ints => MyList(ints*))*)
+      
+      // At first I wanted to use `concat` method as Test Oracle
+      // But its definition requires sending parameter lists explicitly
+      // So `flatten` will do it.
+      concatenates(myIntss) == MyList(intss.flatten*)
     }
   }

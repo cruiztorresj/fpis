@@ -1,4 +1,5 @@
 /**
+* MyAnswersForChapterThree.scala
 * So these are my answers to the exercises found in chapter three
 * Caleb Josue Ruiz Torres
 */
@@ -143,5 +144,21 @@ object MyAnswersForChapterThree:
   // Please find this solution in MyList's companion object. (ListingThreeDotOne.scala file)
   
   // Exercise 3.14
+  def appendUsingFoldRight[A](as1: MyList[A], as2: MyList[A]): MyList[A] =
+    MyList.foldRight(as1, as2, MyList.Cons(_, _))
   
-  
+  // Exercise 3.15 - Hard
+  /**
+  * Please feel free to use `appendUsingFold` to achieve stack-safety.
+  * Of course you'll have to modify the aforementioned function to call
+  * `foldRightInTermsOfFoldLeft` instead of `foldRight` LoC#146
+  */
+  def concatenates[A](ass: MyList[MyList[A]]): MyList[A] =
+    @annotation.tailrec
+    def loop(ass: MyList[MyList[A]], acc: MyList[A]): MyList[A] =
+      ass match
+        case MyList.Nil => acc
+        case MyList.Cons(MyList.Nil, assTail) => loop(assTail, acc)
+        case MyList.Cons(as, assTail) => loop(assTail, MyList.append(acc, as))
+    
+    loop(ass, MyList.Nil)

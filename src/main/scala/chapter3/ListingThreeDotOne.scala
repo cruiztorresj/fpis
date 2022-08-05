@@ -1,3 +1,9 @@
+/**
+* ListingThreeDotOne.scala
+* Code listing for Chapter three
+* Caleb Josue Ruiz Torres
+*/
+
 package chapter3
 
 // Listing 3.1
