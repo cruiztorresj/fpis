@@ -39,9 +39,15 @@ class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
   }
   
   property("Exercise 3.4  - drop implementation") {
-    forAll { (n: Int, xs: List[Int]) =>
-      val myList: MyList[Int] = MyList(xs*)
-      drop(myList, n) == MyList(xs.drop(n)*)
+    // In the end, we are chaining n to be rather a number between this small range
+    // Having big n, was causing the test to take up to ten seconds. 
+    val smallInteger = Gen.choose(-3, 12)
+    
+    forAll(smallInteger) { n =>
+      forAll { (xs: List[Int]) =>
+        val myList: MyList[Int] = MyList(xs*)
+        drop(myList, n) == MyList(xs.drop(n)*)   
+      }
     }
   }
   
@@ -132,5 +138,19 @@ class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
       // But its definition requires sending parameter lists explicitly
       // So `flatten` will do it.
       concatenates(myIntss) == MyList(intss.flatten*)
+    }
+  }
+  
+  property("Exercise 3.16 - Transforms a list of Integers by adding one to each element") {
+    forAll { (ints: List[Int]) =>
+      val myList: MyList[Int] = MyList(ints*)
+      transformIntsByAddingOne(myList) == MyList(ints.map(_ + 1)*)
+    }
+  }
+  
+  property("Exercise 3.17 - Turn each double in a list into its String representation") {
+    forAll { (ds: List[Double]) =>
+      val myList: MyList[Double] = MyList(ds*)
+      transformDoublesIntoStrings(myList) == MyList(ds.map(_.toString)*)
     }
   }

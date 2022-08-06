@@ -138,7 +138,7 @@ object MyAnswersForChapterThree:
     MyList.foldRight(as, MyList.Nil: MyList[A], (a, b) => MyList.append(b, MyList.Cons(a, MyList.Nil)))
   
   def reverseViaFoldLeft[A](as: MyList[A]): MyList[A] =
-    MyList.foldLeft(as, MyList.Nil: MyList[A], (a, b) => MyList.append(MyList.Cons(b, MyList.Nil), a))
+    MyList.foldLeft(as, MyList.Nil: MyList[A], (a, b) => MyList.Cons(b, a))
   
   // Exercise 3.13 - (Optional) - Hard
   // Please find this solution in MyList's companion object. (ListingThreeDotOne.scala file)
@@ -162,3 +162,33 @@ object MyAnswersForChapterThree:
         case MyList.Cons(as, assTail) => loop(assTail, MyList.append(acc, as))
     
     loop(ass, MyList.Nil)
+  
+  
+  // Exercise 3.16
+  // Structural Recursion version.
+  /*
+  def transformIntsByAddingOne(ints: MyList[Int]): MyList[Int] =
+    ints match
+      case MyList.Nil => MyList.Nil
+      case MyList.Cons(h, t) => MyList.Cons(h + 1, transformIntsByAddingOne(t))
+  */
+  
+  // Tail recursive version
+  /*def transformIntsByAddingOne(ints: MyList[Int]): MyList[Int] =
+    @annotation.tailrec
+    def loop(acc: MyList[Int], ints: MyList[Int]): MyList[Int] =
+      ints match
+        case MyList.Nil => acc
+        case MyList.Cons(h, t) => loop(MyList.append(acc, MyList.Cons(h + 1, MyList.Nil)), t)
+    
+    loop(MyList.Nil, ints)
+  */
+  
+  // Fold version
+  def transformIntsByAddingOne(ints: MyList[Int]): MyList[Int] =
+    MyList.foldRight(ints, MyList.Nil, (a: Int, b: MyList[Int]) => MyList.Cons(a + 1, b))
+  
+  // Exercise 3.17
+  // Function turning each value in a list into a String (its string representation)
+  def transformDoublesIntoStrings(ds: MyList[Double]): MyList[String] =
+    MyList.foldRight(ds, MyList.Nil, (a: Double, b: MyList[String]) => MyList.Cons(a.toString, b))
