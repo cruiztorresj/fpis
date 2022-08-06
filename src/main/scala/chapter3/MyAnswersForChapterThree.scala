@@ -192,3 +192,46 @@ object MyAnswersForChapterThree:
   // Function turning each value in a list into a String (its string representation)
   def transformDoublesIntoStrings(ds: MyList[Double]): MyList[String] =
     MyList.foldRight(ds, MyList.Nil, (a: Double, b: MyList[String]) => MyList.Cons(a.toString, b))
+  
+  // Exercise 3.18
+  // `map` !!!
+  def map[A, B](as: MyList[A], f: A => B): MyList[B] =
+    MyList.foldRight(as, MyList.Nil, (a: A, b: MyList[B]) => MyList.Cons(f(a), b))
+  
+
+  def mapTailRecursive[A, B](as: MyList[A], f: A => B): MyList[B] =
+    @annotation.tailrec
+    def loop(acc: MyList[B], as: MyList[A]): MyList[B] =
+      as match
+        case MyList.Nil => acc
+        case MyList.Cons(h, t) => loop(MyList.append(acc, MyList.Cons(f(h), MyList.Nil)), t)
+    
+    loop(MyList.Nil, as)
+  
+  // Exercise 3.19
+  // filter
+  def filter[A](as: MyList[A], p: A => Boolean): MyList[A] =
+    @annotation.tailrec
+    def loop(acc: MyList[A], as: MyList[A]): MyList[A] =
+      as match
+        case MyList.Nil => acc
+        case MyList.Cons(h, t) =>
+          if p(h) then loop(MyList.append(acc, MyList.Cons(h, MyList.Nil)), t)
+          else loop(acc, t)
+    
+    loop(MyList.Nil, as)
+  
+  // Exercise 3.20
+  // flatMap
+  def flatMap[A, B](as: MyList[A], f: A => MyList[B]): MyList[B] =
+    @annotation.tailrec
+    def loop(acc: MyList[B], as: MyList[A]): MyList[B] =
+      as match
+        case MyList.Nil => acc
+        case MyList.Cons(h, t) => loop(MyList.append(acc, f(h)), t)
+    
+    loop(MyList.Nil, as)
+  
+  // This is just to see if flatMap can be implemented using foldRight
+  // def flatMapUsingFoldRight[A, B](as: MyList[A], f: A => MyList[B]): MyList[B] =
+  //  concatenates(MyList.foldRight(as, MyList.Nil, (a: A, b: MyList[MyList[B]]) => MyList.Cons(f(a), b)))

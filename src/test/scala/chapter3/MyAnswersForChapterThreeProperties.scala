@@ -154,3 +154,28 @@ class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
       transformDoublesIntoStrings(myList) == MyList(ds.map(_.toString)*)
     }
   }
+  
+  property("Exercise 3.18 - `map` !!!") {
+    forAll { (ints: List[Int]) =>
+      val myList: MyList[Int] = MyList(ints*)
+      map(myList, _.+(1)) == MyList(ints.map(_ + 1)*)
+    }
+  }
+  
+  property("Exercise 3.19 - `filter` !!!") {
+    val isPair: Int => Boolean = _.%(2) == 0
+    
+    forAll { (ints: List[Int]) =>
+      val myList: MyList[Int] = MyList(ints*)
+      filter(myList, isPair) == MyList(ints.filter(isPair)*)
+    } 
+  }
+  
+  property("Exercise 3.20 - `flatMap` !!!") {
+    val nAndItsSquare: Int => MyList[Int] = n => MyList.Cons(n, MyList.Cons(n * n, MyList.Nil))
+    
+    forAll { (ints: List[Int]) =>
+      val myList: MyList[Int] = MyList(ints*)
+      flatMap(myList, nAndItsSquare) == MyList(ints.flatMap(n => List(n, n*n))*)
+    }
+  }

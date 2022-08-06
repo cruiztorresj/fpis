@@ -86,7 +86,7 @@ object MyList:
   
   // Exercise 3.13 - (Optional) - Hard
   // So, my English is broken. For this problem I understood folds need to be implemented based on each other.
-  // Let's start with foldRightViaFoldLeft so foldRight becomes stack-safe.
+  // Let's start with foldRightViaFoldLeft, this way foldRight becomes stack-safe.
   def foldRightViaFoldLeft[A, B](as: MyList[A], acc: B, f: (A, B) => B): B =
     def invertAndCurry(f: (A, B) => B): B => (A => B) = a => b => f(b, a)
     def uncurryInvertedFunction(f: B => A => B): (B, A) => B = (b, a) => f(b)(a)
