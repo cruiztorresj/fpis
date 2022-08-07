@@ -7,6 +7,8 @@
 package chapter3
 
 object MyAnswersForChapterThree:
+
+  val forbiddenWordForApes = "NO!!!"
   
   // Exercise 3.1
   // Answer is `3`, Compiler warns about last case being unreachable.
@@ -235,3 +237,54 @@ object MyAnswersForChapterThree:
   // This is just to see if flatMap can be implemented using foldRight
   // def flatMapUsingFoldRight[A, B](as: MyList[A], f: A => MyList[B]): MyList[B] =
   //  concatenates(MyList.foldRight(as, MyList.Nil, (a: A, b: MyList[MyList[B]]) => MyList.Cons(f(a), b)))
+  
+  // Exercise 3.21
+  // Use `flatMap` to implement filter
+  def filterUsingFlatMap[A](as: MyList[A], p: A => Boolean): MyList[A] =
+    flatMap(as, a => if p(a) then MyList.Cons(a, MyList.Nil) else MyList.Nil)
+  
+  // Exercie 3.22
+  // Function that accepts two lists and produces and constructs a new one by adding corresponding elements
+  // I am having trouble seeing how this can be composed in terms of flatMap and/or map
+  // So a first shot with tail recursion is given.
+  def elementWiseListsAddition(xs: MyList[Int], ys: MyList[Int]): MyList[Int] =
+    // No constraint was given on list's length, so we will only work with lists of the same length
+    assert(lengthViaFoldLeft(xs) == lengthViaFoldLeft(ys), forbiddenWordForApes)
+    
+    @annotation.tailrec
+    def loop(acc: MyList[Int], xs: MyList[Int], ys: MyList[Int]): MyList[Int] =
+      xs match
+        case MyList.Nil => acc
+        case MyList.Cons(x, xs) =>
+          ys match
+            case MyList.Nil => acc
+            case MyList.Cons(y, ys) =>
+              loop(MyList.append(acc, MyList.Cons(x + y, MyList.Nil)), xs, ys)
+    
+    loop(MyList.Nil, xs, ys)
+  
+  
+  // def elementWiseListAddition(xs: MyList[Int], ys: MyList[Int]): MyList[Int] =
+  // assert(lengthViaFoldLeft(xs) == lengthViaFoldLeft(ys), "NO!!!")
+  // Saddly, I won't give a shot to express `elementWiseListsAddition` in terms of `map` and/or `flatMap`
+  
+  // Exercise 3.23
+  // Generalize solution for Exercise 3.22 so that it's not specific to integers or addition.
+  // Traditionally this function is being called `zip`, but let's suppose this is your first encounter
+  // with Functional Programming (FP), the book will introduce that name later, for the time being
+  // Let's call it `generalizationOfOperandOverTwoLists` or something in that vein.
+  def elementWiseFunctionApplicationOverTwoLists[A, B](xs: MyList[A], ys: MyList[B], f: (A, B) => B): MyList[B] =
+    // No constraint was given on list's length, so we will only work with lists of the same length
+    assert(lengthViaFoldLeft(xs) == lengthViaFoldLeft(ys), forbiddenWordForApes)
+    
+    @annotation.tailrec
+    def loop(acc: MyList[B], xs: MyList[A], ys: MyList[B]): MyList[B] =
+      xs match
+        case MyList.Nil => acc
+        case MyList.Cons(x, xs) =>
+          ys match
+            case MyList.Nil => acc
+            case MyList.Cons(y, ys) =>
+              loop(MyList.append(acc, MyList.Cons(f(x, y), MyList.Nil)), xs, ys)
+    
+    loop(MyList.Nil, xs, ys)

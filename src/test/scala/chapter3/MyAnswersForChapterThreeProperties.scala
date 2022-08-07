@@ -179,3 +179,38 @@ class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
       flatMap(myList, nAndItsSquare) == MyList(ints.flatMap(n => List(n, n*n))*)
     }
   }
+  
+  // This is the same as 3.19 but using `filterUsingFlatMap` instead. Feel free to fet rid of it.
+  // In general, you can come up with a refactor for a lot of properties over this file
+  property("Exercise 3.21 - filter implementation by means of flatMap") {
+    val isPair: Int => Boolean = _.%(2) == 0
+    
+    forAll { (ints: List[Int]) =>
+      val myList: MyList[Int] = MyList(ints*)
+      filterUsingFlatMap(myList, isPair) == MyList(ints.filter(isPair)*)
+    } 
+  }
+  
+  property("Exercise 3.22 - Accepts two lists and constructs a new list by adding corresponding elements") {
+    forAll { (xs: List[Int], ys: List[Int]) =>
+      // We are only testing for lists with the same length
+      if(xs.length == ys.length) then
+        val myListFromXss: MyList[Int] = MyList(xs*)
+        val myListFromYss: MyList[Int] = MyList(ys*)
+        sumViaFoldLeft(elementWiseListsAddition(myListFromXss, myListFromYss)) == xs.sum + ys.sum
+      else
+        true
+    }
+  }
+  
+  // Feel free to use `zip` function as Test Oracle for this property
+  property("Exercise 3.23 - Generalization of the previous function") {
+    forAll { () =>
+      val myList: MyList[Int] = MyList(List(1, 2, 3)*)
+       
+      val expectedResult: MyList[Int] = MyList.Cons(1, MyList.Cons(4, MyList.Cons(9, MyList.Nil)))
+       
+      expectedResult == MyAnswersForChapterThree.
+        elementWiseFunctionApplicationOverTwoLists(myList, myList, (x, y) => x * y)
+    }
+  }
