@@ -214,3 +214,30 @@ class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
         elementWiseFunctionApplicationOverTwoLists(myList, myList, (x, y) => x * y)
     }
   }
+  
+  // This is by no means exhaustive, and these things aren't properties any longer. The book isn't about testing anyway
+  // And There will be a repo on properties topic.
+  property("Exercise 3.24 - Hard - Whether a List contains another List as a subsequence") {
+    forAll { () =>
+      val sup: MyList[String] = MyList(List("a", "b", "c", "d")*)
+      val sub1: MyList[String] = MyList(List("a", "b")*)
+      val sub2: MyList[String] = MyList(List("b", "c")*)
+      val sub3: MyList[String] = MyList(List("d")*)
+      val sub4: MyList[String] = MyList(List()*)
+      val notSub1: MyList[String] = MyList(List("x")*)
+      val notSub2: MyList[String] = MyList(List("c", "b")*)
+      val notSub3: MyList[String] = MyList(List("c", "d", "x")*)
+      val notSub4: MyList[String] = MyList(List("x", "a", "b", "c")*)
+      
+       
+      MyAnswersForChapterThree.hasSubsequence(sup, sub1)
+      MyAnswersForChapterThree.hasSubsequence(sup, sub2)
+      MyAnswersForChapterThree.hasSubsequence(sup, sub3)
+      MyAnswersForChapterThree.hasSubsequence(sup, sub4)
+      MyAnswersForChapterThree.hasSubsequence(sup, sup)
+      !MyAnswersForChapterThree.hasSubsequence(sup, notSub1)
+      !MyAnswersForChapterThree.hasSubsequence(sup, notSub2)
+      !MyAnswersForChapterThree.hasSubsequence(sup, notSub3)
+      !MyAnswersForChapterThree.hasSubsequence(sup, notSub4)
+    }
+  }

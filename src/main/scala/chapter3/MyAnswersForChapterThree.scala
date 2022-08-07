@@ -288,3 +288,21 @@ object MyAnswersForChapterThree:
               loop(MyList.append(acc, MyList.Cons(f(x, y), MyList.Nil)), xs, ys)
     
     loop(MyList.Nil, xs, ys)
+  
+  // Exercise 3.24 - Hard
+  def hasSubsequence[A](sup: MyList[A], sub: MyList[A]): Boolean =
+    // If sub's length is greater than sup's, it isn't contained.
+    assert(lengthViaFoldLeft(sub) <= lengthViaFoldLeft(sup), forbiddenWordForApes)
+    
+    @annotation.tailrec
+    def loop(acc: Boolean, sup: MyList[A], sub: MyList[A]): Boolean =
+      sub match
+        case MyList.Nil => acc
+        case MyList.Cons(h, t) =>
+          sup match
+            case MyList.Nil => false
+            case MyList.Cons(hPrime, tPrime) =>
+              if h == hPrime then loop(true && acc, tPrime, t)
+              else loop(acc, tPrime, MyList.Cons(h, t))
+    
+    loop(true, sup, sub)
