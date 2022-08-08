@@ -20,6 +20,7 @@ enum Tree[+A]:
   // Exercise 3.26
   // depth
   // Returns the maximum path length from the root of a tree to any leaf.
+  // Compare this with the solution provided in the book, those guys are clever.
   def depth: Int =
     this match
       case Leaf(_) => 0
@@ -52,8 +53,36 @@ object Tree:
   
   // Exercise 3.28
   // Abstract similiraties of the previous three exercises into a more general function `fold`
-  // WIP
   /*def fold[A, B](t: Tree[A], acc: B, f: (A, B) => B): B =
     t match
       case Leaf(i) => f(i, acc)
-      case Branch(l, r) => f(fold(l, acc, f), fold(r, acc, f))*/
+      case Branch(l, r) => (l, r) match
+        // case (_, Leaf(ii)) => f(ii, fold(l, acc, f))
+        // case (Leaf(ii), _) => f(ii, fold(r, acc, f))
+        case (Branch(_, _), _) => fold(l, acc, f)
+        case (_, Branch(_, _)) => fold(r, acc, f)
+   */
+   
+   /*def fold[A, B](t: Tree[A], f: A => B): B =
+    t match
+      case Leaf(i) => f(i)
+      case Branch(l, r) => (l, r) match
+        // case (_, Leaf(ii)) => f(ii, fold(l, acc, f))
+        // case (Leaf(ii), _) => f(ii, fold(r, acc, f))
+        case (Branch(_, _), _) => fold(l, acc, f)
+        case (_, Branch(_, _)) => fold(r, acc, f)*/
+   
+   // I couldn't figure out a way to combine the two fuctions at the end. For this problem, I will have to see the answer in the book.
+   
+   /*
+   * OK, Two hours later I'm done going through the answers section.
+   * What happened?
+   * Use the official repo to assist yourself in your learning journey with this book!!!
+   * While the book invites you to write this function, coming up with the signature for this problem doesn't seem to be trivial.
+   * The official repo does contains suggested signatures for the problems, however, One can think that having already the type signature
+   * Is like having the solution for the problem!!!
+   * So, how can you come up for yourself with the beautiful solutions the book provides? I suppose is all about taking enough time.
+   * to digest the presented material as they suggest starting the chapter 3.
+   * Another think I found out is that I didn't expressed more computations in terms of folds.
+   * Perhaps, reading the book twice after some period of time. Is not a bad idea after all.
+   */

@@ -68,7 +68,6 @@ object MyList:
   def productViaFoldRight(ds: MyList[Double]) = foldRight(ds, 1.0, _ * _)
   
   // Solution for Exercise 3.10
-  
   /*
   * So the exercise ask us to convince ourselves foldRight isn't tail recursive
   * You can do that by placing `@annotation.tailrec` so the compiler informs you
