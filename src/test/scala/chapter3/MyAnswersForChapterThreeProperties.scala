@@ -6,10 +6,11 @@
 
 package chapter3
 
+import MyAnswersForChapterThree._
+import Tree._
+
 import org.scalacheck.Gen
 import org.scalacheck.Prop.forAll
-
-import MyAnswersForChapterThree._
 
 class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
 
@@ -241,3 +242,43 @@ class MyAnswersForChapterThreeProperties extends munit.ScalaCheckSuite:
       !MyAnswersForChapterThree.hasSubsequence(sup, notSub4)
     }
   }
+  
+  // You get the idea
+  property("Exercise 3.25 - `maximum` returns the maximum element in a Tree[Int]") {
+    forAll { () =>
+      // By our definition a Tree can't be empty.
+      val myTree1: Tree[Int] = Leaf(0)
+      val myTree2: Tree[Int] = Branch(Branch(Leaf(-4), Leaf(0)), Branch(Leaf(9), Leaf(6)))
+       
+      myTree1.maximum == 0
+      myTree2.maximum == 9
+    }
+  }
+  
+  property("Exercise 3.26 - `depth` A tree's maximum path length") {
+    forAll { () =>
+      val myTree1: Tree[Int] = Leaf(0)
+      val myTree2: Tree[String] = Branch(Branch(Leaf("a"), Leaf("b")), Branch(Leaf("c"), Leaf("d")))
+      val myTree3: Tree[Int] = Branch(Leaf(1), Leaf(3))
+      val myTree4: Tree[Int] = Branch(Leaf(7), Branch(Branch(Leaf(1), Leaf(3)), Leaf(9)))
+       
+      myTree1.depth == 0
+      myTree2.depth == 2
+      myTree3.depth == 1
+      myTree4.depth == 3
+    }
+  }
+  
+  property("Exercise 3.27 - `map` over Trees") {
+    forAll { () =>
+      val myTree1: Tree[Int] = Leaf(0)
+      val myTree2: Tree[String] = Branch(Branch(Leaf("a"), Leaf("b")), Branch(Leaf("c"), Leaf("d")))
+      val myTree3: Tree[Int] = Branch(Leaf(1), Leaf(3))
+       
+      myTree1.map(_.+(1)) == Leaf(1)
+      myTree2.map(_.toUpperCase) == Branch(Branch(Leaf("A"), Leaf("B")), Branch(Leaf("C"), Leaf("D")))
+      myTree3.map(_*(5)) == Branch(Leaf(5), Leaf(15))
+    }
+  }
+  
+  
