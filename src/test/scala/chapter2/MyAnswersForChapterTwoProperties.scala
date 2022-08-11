@@ -8,13 +8,13 @@ import MyAnswersForChapterTwo.{fib, isSorted}
 class MyAnswersForChapterTwoProperties extends munit.ScalaCheckSuite:
   val fibonacciDomainForIntDataType: Gen[Int] = Gen.choose(1, 47)
   
-  property("Exercise 2.1 - (Optional) nth Fibonacci is equal to the sum of the previous two Fibonacci numbers") {
+  property("Exercise 2.1  - (Optional) nth Fibonacci is equal to the sum of the previous two Fibonacci numbers") {
     forAll(fibonacciDomainForIntDataType.suchThat(_ >= 3)) { (n: Int) =>
       fib(n) == fib(n - 1) + fib(n - 2)
     }
   }
   
-  property("Exercise 2.1 - (Optional) Fibonacci numbers are positive") {
+  property("Exercise 2.1  - (Optional) Fibonacci numbers are positive") {
     forAll(fibonacciDomainForIntDataType) { (n: Int) =>
       fib(n) > -1
     }
@@ -30,7 +30,7 @@ class MyAnswersForChapterTwoProperties extends munit.ScalaCheckSuite:
   
   def greaterThan(a: Int, b: Int): Boolean = a > b
   
-  property("Exercise 2.2 - isSorted with greaterThan function") {
+  property("Exercise 2.2  - isSorted with greaterThan function") {
     forAll { (arr: Array[Int]) =>
       val xsFromArrNoDuplicates: List[Int] = arr.toList.distinct // Need to check if `distinct` can be used within the Generator itself.
       val orderedArr = xsFromArrNoDuplicates.sortWith(greaterThan).toArray
