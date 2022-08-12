@@ -12,9 +12,9 @@ import MyOption._
 object MyAnswersForChapterFour:
   
   // Function provided by the book authors
-  def mean(xs: Seq[Double]): MyOption[Double] =
-    if xs.isEmpty then MyNone
-    else MySome(xs.sum / xs.length)
+  def mean(ds: Seq[Double]): MyOption[Double] =
+    if ds.isEmpty then MyNone
+    else MySome(ds.sum / ds.length)
 
   // Exercise 4.2 - Optional
   def variance(ds: Seq[Double]): MyOption[Double] =
