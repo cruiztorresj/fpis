@@ -27,6 +27,7 @@ enum MyLazyList[+A]:
 		loop(List.empty[A], this)
 
 	// Exercise 5.2
+	// a) Define take(n) for returning the first n elements of a LazyList.
 	// def take(n: Int): MyLazyList[A] =
 	// 	@annotation.tailrec
 	// 	def loop(acc: MyLazyList[A], lazyList: => MyLazyList[A], n: Int): MyLazyList[A] =
@@ -39,9 +40,7 @@ enum MyLazyList[+A]:
 		
 	// 	if n < 0 then Empty
 	// 	else loop(Empty, this, n)
-
-	// Exercise 5.2
-	// a) Define take(n) for returning the first n elements of a LazyList.
+	
 	// I've ended having to take a look at the provided answer.
 	// It turns out 
 	def take(n: Int): MyLazyList[A] =
@@ -75,6 +74,23 @@ enum MyLazyList[+A]:
 			case Cons(hd, tl) if p(hd()) => MyLazyList.cons(hd(), tl().takeWhile(p))
 			case Cons(hd, tl) if !p(hd()) => MyLazyList.empty
 			case _ => MyLazyList.empty
+
+	// Function `exists` that checks whether an element
+	// matching a Boolean function exists in this LazyList.
+	def exists(p: A => Boolean): Boolean =
+		this match
+			case Cons(hd, tl) => p(hd()) || tl().exists(p) 
+			case _ => false
+
+	// Implementing a general recursion in the form of foldRight			
+	def foldRight[B](acc: => B)(f: (A, => B) => B): B =
+		this match
+			case Cons(hd, tl) => f(hd(), tl().foldRight(acc)(f))
+			case _ => acc
+
+	// Using lazy foldRight to implement `exists`
+	def existsWithFoldRight(p: A => Boolean): Boolean =
+		foldRight(false)((a, b) => p(a) || b)
 
 object MyLazyList:
 	def cons[A](hd: => A, tl: => MyLazyList[A]): MyLazyList[A] =
