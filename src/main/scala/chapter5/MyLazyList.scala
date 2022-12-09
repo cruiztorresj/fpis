@@ -16,6 +16,12 @@ enum MyLazyList[+A]:
 			case Empty => None
 			case Cons(hd, tl) => Some(hd())
 
+	// Helper method `isEmpty` checks for elements in this lazy list.
+	def isEmpty: Boolean =
+		this match
+			case Empty => true
+			case _ => false
+
 	// Exercise 5.1
 	def toList: List[A] =
 		@annotation.tailrec
@@ -89,8 +95,47 @@ enum MyLazyList[+A]:
 			case _ => acc
 
 	// Using lazy foldRight to implement `exists`
-	def existsWithFoldRight(p: A => Boolean): Boolean =
+	def existsViaFoldRight(p: A => Boolean): Boolean =
 		foldRight(false)((a, b) => p(a) || b)
+
+	// Exercise 5.4
+	// Implement `forAll`, which checks that all elements in the Lazy List
+	// match a given predicate.
+	def forAll(p: A => Boolean): Boolean =
+		this match
+			case Cons(hd, tl) => p(hd()) && tl().forAll(p)
+			case _ => true
+
+	// Exercise 5.5
+	// Use `foldRight` to implement `takeWhile`
+	def takeWhileViaFoldRight(p: A => Boolean): MyLazyList[A] =
+		foldRight(MyLazyList.empty)((a, b) => if p(a) then MyLazyList.cons(a, b) else MyLazyList.empty)
+
+	// Exercise 5.6
+	// Implemente `headOption` using `foldRight`
+	// OK, I am skipping this one since I am not seeing any recursion in `maybeHead` function.
+
+	// Exercise 5.7
+	// Several functions implementation.
+	// `map` implementation using foldRight
+	def map[B](g: A => B): MyLazyList[B] =
+		foldRight(MyLazyList.empty)((a, b) => MyLazyList.cons(g(a), b))
+
+	// `filter`
+	def filter(p: A => Boolean): MyLazyList[A] =
+		foldRight(MyLazyList.empty)((a, b) => if p(a) then MyLazyList.cons(a, b) else b)
+
+	// append
+	def append[B >: A](bs: => MyLazyList[B]): MyLazyList[B] =
+		if bs.isEmpty then
+			this
+		else
+			foldRight(bs)((a, b) => MyLazyList.cons(a, b))
+
+	// flatMap
+	def flatMap[B](g: A => MyLazyList[B]): MyLazyList[B] =
+		foldRight(MyLazyList.empty)((a, b) => g(a).append(b))
+
 
 object MyLazyList:
 	def cons[A](hd: => A, tl: => MyLazyList[A]): MyLazyList[A] =
@@ -103,3 +148,38 @@ object MyLazyList:
 	def apply[A](as: A*): MyLazyList[A] =
 		if as.isEmpty then empty
 		else cons(as.head, apply(as.tail*))
+
+	val ones: MyLazyList[Int] = cons(1, ones)
+
+	// Exercise 5.8
+	// Generalize ones slightly to the function `continually`, which returns an
+	// Infinite Lazy List of a given value.
+	def continually[A](a: A): MyLazyList[A] = cons(a, continually(a))
+
+	// Exercise 5.9
+	// Write a function that generates an infinite Lazy List of integers.
+	// Starting from n, then n + 1, n + 2, and so on.
+	def from(n: Int): MyLazyList[Int] = cons(n, from(n + 1))
+
+	// Exercise 5.10
+	// Write a function `fibs` that generates the infinite Lazy List of
+	// Fibonnaci numbers: 0, 1, 1, 2, 3, 5, 8, and so on.
+	// OK. In here we already solved fib(n) back in exercise 2.1
+	// So, I will just call it.
+	// If the author shows how to solve this exercise without an auxiliary
+	// Function. I certainly will be amazed.
+	def fibs: MyLazyList[Int] =
+		def fib(n: Int): Int =
+			@annotation.tailrec
+			def loop(acc1: Int, acc2: Int, n: Int): Int =
+				if n == 1 then acc1
+				else if n == 2 then acc2
+				else loop(acc2, acc1 + acc2, n - 1)
+
+			loop(0, 1, n)
+
+		def theFibs(n: Int): MyLazyList[Int] = cons(fib(n), theFibs(n + 1))
+
+		theFibs(1)
+
+	//===============

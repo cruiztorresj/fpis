@@ -39,3 +39,76 @@ class ChapterFiveSolutionsProperties extends munit.ScalaCheckSuite:
       myLazyList.takeWhile(p).toList == xs.takeWhile(p)
     }
   }
+
+  property("Exercise 5.4  - LazyList forall implementation") {
+    val p: Int => Boolean = _ % 2 == 0
+
+    forAll { (xs: List[Int]) =>
+      val myLazyList: MyLazyList[Int] = MyLazyList(xs*)
+      myLazyList.forAll(p) == xs.forall(p)
+    }
+  }
+
+  property("Exercise 5.5  - LazyList takeWhile implementation via foldRight") {
+    val p: Int => Boolean = _ % 2 == 0
+
+    forAll { (xs: List[Int]) =>
+      val myLazyList: MyLazyList[Int] = MyLazyList(xs*)
+      myLazyList.takeWhileViaFoldRight(p).toList == xs.takeWhile(p)
+    }
+  }
+
+  property("Exercise 5.7  - a) map implementation over a LazyList") {
+    forAll{ (xs: List[Int]) =>
+      val myLazyList: MyLazyList[Int] = MyLazyList(xs*)
+      myLazyList.map(n => n * 2).toList == xs.map(_ * 2)
+    }
+  }
+
+  property("Exercise 5.7  - b) filter implementation over a LazyList") {
+    val p: Int => Boolean = _ % 2 == 0
+
+    forAll{ (xs: List[Int]) =>
+      val myLazyList: MyLazyList[Int] = MyLazyList(xs*)
+      myLazyList.filter(p).toList == xs.filter(p)
+    }
+  }
+
+  property("Exercise 5.7  - c) append implementation over a LazyList") {
+    forAll{ (xs: List[Int]) =>
+      val myLazyList: MyLazyList[Int] = MyLazyList(xs*)
+      myLazyList.append(myLazyList).toList == xs.appendedAll(xs)
+    }
+  }
+
+  property("Exercise 5.7  - d) flatMap implementation over a LazyList") {
+    forAll{ (xs: List[Int]) =>
+      val myLazyList: MyLazyList[Int] = MyLazyList(xs*)
+      myLazyList.flatMap(i => MyLazyList(i, i * 2, i * i)).toList == xs.flatMap(i => List(i, i * 2, i * i))
+    }
+  }
+
+  property("Exercise 5.8  - continually implementation") {
+    val smallInteger = Gen.choose(0, 20)
+
+    forAll(smallInteger) { n =>
+      MyLazyList.continually(n).take(n).toList == List.fill(n)(n)
+    }
+  }
+
+  property("Exercise 5.9  - from implementation") {
+    val smallInteger = Gen.choose(0, 20)
+
+    forAll(smallInteger) { n =>
+      MyLazyList.from(n).take(n).toList == List.range(n, n + n)
+    }
+  }
+
+  property("Exercise 5.10 - fibs implementation") {
+    val fibos: List[Int] = List(0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181)
+    val smallInteger = Gen.choose(0, 20)
+
+    forAll(smallInteger) { n =>
+      MyLazyList.fibs.take(n).toList == fibos.take(n)
+    }
+  }
