@@ -113,10 +113,13 @@ enum MyLazyList[+A]:
 
 	// Exercise 5.6
 	// Implemente `headOption` using `foldRight`
-	// OK, I am skipping this one since I am not seeing any recursion in `maybeHead` function.
+	// OK, I am skipping this one since I am not seeing any recursion in `maybeHead` (`headOption`) function.
+	// Two weeks later: I think I am giving a shot to this one.
+	def headOption: Option[A] = foldRight(Option.empty)((a, b) => Some(a))
 
 	// Exercise 5.7
 	// Several functions implementation.
+
 	// `map` implementation using foldRight
 	def map[B](g: A => B): MyLazyList[B] =
 		foldRight(MyLazyList.empty)((a, b) => MyLazyList.cons(g(a), b))
@@ -149,6 +152,7 @@ object MyLazyList:
 		if as.isEmpty then empty
 		else cons(as.head, apply(as.tail*))
 
+	// Provided in the book.
 	val ones: MyLazyList[Int] = cons(1, ones)
 
 	// Exercise 5.8
@@ -182,4 +186,51 @@ object MyLazyList:
 
 		theFibs(1)
 
-	//===============
+	// Exercise 5.11
+	// Write a more general LazyList-bulding function called `unfold`
+	// It takes an initial State, and a function for producing both
+	// the next state and the next value in the generated Lazy List.
+	def unfold[A, S](state: S)(f: S => Option[(A, S)]): MyLazyList[A] =
+		
+		/**
+		 * While the following works, it isn't stack-safe
+		 * // @annotation.tailrec
+		 * def loop(results: Option[(A, S)]): MyLazyList[A] =
+		 *   results match
+		 *     case Some(a, sNext) => cons(a, loop(f(sNext)))
+		 *     case _ => empty
+     *
+		 * loop(f(state)) 
+		 **/
+
+		// This works like a charm too, but I am not sure about its stack-safetyness.
+		f(state) match
+			case Some(a, sNext) => cons(a, unfold(sNext)(f))
+			case _ => empty
+
+	// Exercise 5.12
+	// Several functions.
+	
+	// `ones` usinf `unfold`
+	val onesUsingUnfold: MyLazyList[Int] = unfold(0)(Option(1, (_: Int)))
+
+	// `continually` using `unfold`
+	def continuallyUsingUnfold[A](a: A): MyLazyList[A] = unfold(a)(Option(a, (_: A)))
+
+	// `from` using `unfold`
+	def fromUsingUnfold(n: Int): MyLazyList[Int] = unfold(n)(number => Option(number, number + 1))
+
+	// `fibs` using `unfold`
+	// here we are again, and of course we are using a helper function.
+	def fibsUsingUnfold: MyLazyList[Int] =
+		// At this point we have now this function in a three different places. A refactor is required.
+		def fib(n: Int): Int =
+			@annotation.tailrec
+			def loop(acc1: Int, acc2: Int, n: Int): Int =
+				if n == 1 then acc1
+				else if n == 2 then acc2
+				else loop(acc2, acc1 + acc2, n - 1)
+
+			loop(0, 1, n)
+
+		unfold(1)(nth => Option(fib(nth), nth + 1))

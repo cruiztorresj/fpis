@@ -58,8 +58,15 @@ class ChapterFiveSolutionsProperties extends munit.ScalaCheckSuite:
     }
   }
 
+  property("Exercise 5.6  - headOption implementation via foldRight") {
+    forAll { (xs: List[Int]) =>
+      val myLazyList: MyLazyList[Int] = MyLazyList(xs*)
+      myLazyList.headOption == xs.headOption
+    }
+  }
+
   property("Exercise 5.7  - a) map implementation over a LazyList") {
-    forAll{ (xs: List[Int]) =>
+    forAll { (xs: List[Int]) =>
       val myLazyList: MyLazyList[Int] = MyLazyList(xs*)
       myLazyList.map(n => n * 2).toList == xs.map(_ * 2)
     }
@@ -68,21 +75,21 @@ class ChapterFiveSolutionsProperties extends munit.ScalaCheckSuite:
   property("Exercise 5.7  - b) filter implementation over a LazyList") {
     val p: Int => Boolean = _ % 2 == 0
 
-    forAll{ (xs: List[Int]) =>
+    forAll { (xs: List[Int]) =>
       val myLazyList: MyLazyList[Int] = MyLazyList(xs*)
       myLazyList.filter(p).toList == xs.filter(p)
     }
   }
 
   property("Exercise 5.7  - c) append implementation over a LazyList") {
-    forAll{ (xs: List[Int]) =>
+    forAll { (xs: List[Int]) =>
       val myLazyList: MyLazyList[Int] = MyLazyList(xs*)
       myLazyList.append(myLazyList).toList == xs.appendedAll(xs)
     }
   }
 
   property("Exercise 5.7  - d) flatMap implementation over a LazyList") {
-    forAll{ (xs: List[Int]) =>
+    forAll { (xs: List[Int]) =>
       val myLazyList: MyLazyList[Int] = MyLazyList(xs*)
       myLazyList.flatMap(i => MyLazyList(i, i * 2, i * i)).toList == xs.flatMap(i => List(i, i * 2, i * i))
     }
@@ -110,5 +117,38 @@ class ChapterFiveSolutionsProperties extends munit.ScalaCheckSuite:
 
     forAll(smallInteger) { n =>
       MyLazyList.fibs.take(n).toList == fibos.take(n)
+    }
+  }
+
+  property("Exercise 5.11 - unfold ones implementation") {
+    val smallInteger = Gen.choose(0, 20)
+
+    forAll(smallInteger) { n =>
+      MyLazyList.onesUsingUnfold.take(n).toList == List.fill(n)(1)
+    }
+  }
+
+  property("Exercise 5.11 - unfold continually implementation") {
+    val smallInteger = Gen.choose(0, 20)
+
+    forAll(smallInteger) { n =>
+      MyLazyList.continuallyUsingUnfold(n).take(n).toList == List.fill(n)(n)
+    }
+  }
+
+  property("Exercise 5.11 - unfold from implementation") {
+    val smallInteger = Gen.choose(0, 20)
+
+    forAll(smallInteger) { n =>
+      MyLazyList.fromUsingUnfold(n).take(n).toList == List.range(n, n + n)
+    }
+  }
+
+  property("Exercise 5.11 - unfold fibs implementation") {
+    val fibos: List[Int] = List(0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181)
+    val smallInteger = Gen.choose(0, 20)
+
+    forAll(smallInteger) { n =>
+      MyLazyList.fibsUsingUnfold.take(n).toList == fibos.take(n)
     }
   }
