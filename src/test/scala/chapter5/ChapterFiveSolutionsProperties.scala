@@ -120,7 +120,7 @@ class ChapterFiveSolutionsProperties extends munit.ScalaCheckSuite:
     }
   }
 
-  property("Exercise 5.11 - unfold ones implementation") {
+  property("Exercise 5.12 - unfold ones implementation") {
     val smallInteger = Gen.choose(0, 20)
 
     forAll(smallInteger) { n =>
@@ -128,7 +128,7 @@ class ChapterFiveSolutionsProperties extends munit.ScalaCheckSuite:
     }
   }
 
-  property("Exercise 5.11 - unfold continually implementation") {
+  property("Exercise 5.12 - unfold continually implementation") {
     val smallInteger = Gen.choose(0, 20)
 
     forAll(smallInteger) { n =>
@@ -136,7 +136,7 @@ class ChapterFiveSolutionsProperties extends munit.ScalaCheckSuite:
     }
   }
 
-  property("Exercise 5.11 - unfold from implementation") {
+  property("Exercise 5.12 - unfold from implementation") {
     val smallInteger = Gen.choose(0, 20)
 
     forAll(smallInteger) { n =>
@@ -144,11 +144,29 @@ class ChapterFiveSolutionsProperties extends munit.ScalaCheckSuite:
     }
   }
 
-  property("Exercise 5.11 - unfold fibs implementation") {
+  property("Exercise 5.12 - unfold fibs implementation") {
     val fibos: List[Int] = List(0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181)
     val smallInteger = Gen.choose(0, 20)
 
     forAll(smallInteger) { n =>
       MyLazyList.fibsUsingUnfold.take(n).toList == fibos.take(n)
     }
+  }
+
+  property("Exercise 5.13 - map implementation via unfold") {
+    forAll { (xs: List[Int]) =>
+      val myLazyList: MyLazyList[Int] = MyLazyList(xs*)
+      myLazyList.mapUsingUnfold(_ * 2).toList == xs.map(_ * 2)
+    }
+  }
+
+  property("Exercise 5.13 - take implementation via unfold") {
+    val smallInteger = Gen.choose(-3, 25)
+
+    forAll(smallInteger) { n =>
+      forAll { (xs: List[Int]) =>
+        val myLazyList: MyLazyList[Int] = MyLazyList(xs*)
+        myLazyList.takeUsingUnfold(n).toList == xs.take(n)
+      }
+    } 
   }

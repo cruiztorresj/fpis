@@ -139,6 +139,38 @@ enum MyLazyList[+A]:
 	def flatMap[B](g: A => MyLazyList[B]): MyLazyList[B] =
 		foldRight(MyLazyList.empty)((a, b) => g(a).append(b))
 
+	// Exercise 5.13
+	// Several function implementations
+
+	// `map` implementation using `unfold`
+	def mapUsingUnfold[B](f: A => B): MyLazyList[B] =
+		// OK, in here the second parameter can be rewritten with braces instead of parentheses
+		MyLazyList.unfold(this)(_ match
+															case Cons(hd, tl) => Option(f(hd()), tl()) 
+															case _ => None)
+
+	// `take` implementation using `unfold`
+	def takeUsingUnfold(n: Int): MyLazyList[A] =
+		if n < 0 then
+			MyLazyList.empty
+		else
+			// In here, you can find the second parameter specified within braces instead
+			// Of course, this is for pedagogical purposes, in other scenarios you will want to remain consistent
+			// With your employer guidelines.
+			MyLazyList.unfold((n, this))
+				{(counter, theLazyList) =>
+					theLazyList match
+						case Cons(hd, tl) if counter > 0 => Option(hd(), (counter - 1, tl()))
+						case Cons(hd, tl) if counter == 0 => None  
+						case _ => None
+				}
+			// Still, if you want to see how it looks with parentheses. Here you go
+			// MyLazyList.unfold((n, this))((counter, theLazyList) =>
+			// 															theLazyList match
+			// 																case Cons(hd, tl) if counter > 0 => Option(hd(), (counter - 1, tl()))
+			// 																case Cons(hd, tl) if counter == 0 => None  
+			// 																case _ => None
+			// 															)
 
 object MyLazyList:
 	def cons[A](hd: => A, tl: => MyLazyList[A]): MyLazyList[A] =
@@ -234,3 +266,8 @@ object MyLazyList:
 			loop(0, 1, n)
 
 		unfold(1)(nth => Option(fib(nth), nth + 1))
+
+	// Exercise 5.13
+	// Several functions
+
+	// 
