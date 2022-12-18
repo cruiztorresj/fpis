@@ -271,7 +271,8 @@ object MyAnswersForChapterThree:
   // So a first shot with tail recursion is given.
   def elementWiseListsAddition(xs: MyList[Int], ys: MyList[Int]): MyList[Int] =
     // No constraint was given on list's length, so we will only work with lists of the same length
-    assert(lengthViaFoldLeft(xs) == lengthViaFoldLeft(ys), forbiddenWordForApes)
+    // Edit (4+ months later). I am commenting the below assertion, it isn't needed.
+    // assert(lengthViaFoldLeft(xs) == lengthViaFoldLeft(ys), forbiddenWordForApes)
     
     @annotation.tailrec
     def loop(acc: MyList[Int], xs: MyList[Int], ys: MyList[Int]): MyList[Int] =
@@ -297,7 +298,7 @@ object MyAnswersForChapterThree:
   // Let's call it `generalizationOfOperandOverTwoLists` or something in that vein.
   def elementWiseFunctionApplicationOverTwoLists[A, B](xs: MyList[A], ys: MyList[B], f: (A, B) => B): MyList[B] =
     // No constraint was given on list's length, so we will only work with lists of the same length
-    assert(lengthViaFoldLeft(xs) == lengthViaFoldLeft(ys), forbiddenWordForApes)
+    //assert(lengthViaFoldLeft(xs) == lengthViaFoldLeft(ys), forbiddenWordForApes)
     
     @annotation.tailrec
     def loop(acc: MyList[B], xs: MyList[A], ys: MyList[B]): MyList[B] =

@@ -120,7 +120,7 @@ class ChapterFiveSolutionsProperties extends munit.ScalaCheckSuite:
     }
   }
 
-  property("Exercise 5.12 - unfold ones implementation") {
+  property("Exercise 5.12 - a) ones via unfold implementation") {
     val smallInteger = Gen.choose(0, 20)
 
     forAll(smallInteger) { n =>
@@ -128,7 +128,7 @@ class ChapterFiveSolutionsProperties extends munit.ScalaCheckSuite:
     }
   }
 
-  property("Exercise 5.12 - unfold continually implementation") {
+  property("Exercise 5.12 - b) continually via unfold implementation") {
     val smallInteger = Gen.choose(0, 20)
 
     forAll(smallInteger) { n =>
@@ -136,7 +136,7 @@ class ChapterFiveSolutionsProperties extends munit.ScalaCheckSuite:
     }
   }
 
-  property("Exercise 5.12 - unfold from implementation") {
+  property("Exercise 5.12 - c) from via unfold implementation") {
     val smallInteger = Gen.choose(0, 20)
 
     forAll(smallInteger) { n =>
@@ -144,7 +144,7 @@ class ChapterFiveSolutionsProperties extends munit.ScalaCheckSuite:
     }
   }
 
-  property("Exercise 5.12 - unfold fibs implementation") {
+  property("Exercise 5.12 - d) fibs via unfold implementation") {
     val fibos: List[Int] = List(0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181)
     val smallInteger = Gen.choose(0, 20)
 
@@ -153,14 +153,14 @@ class ChapterFiveSolutionsProperties extends munit.ScalaCheckSuite:
     }
   }
 
-  property("Exercise 5.13 - map implementation via unfold") {
+  property("Exercise 5.13 - a) map implementation via unfold") {
     forAll { (xs: List[Int]) =>
       val myLazyList: MyLazyList[Int] = MyLazyList(xs*)
       myLazyList.mapUsingUnfold(_ * 2).toList == xs.map(_ * 2)
     }
   }
 
-  property("Exercise 5.13 - take implementation via unfold") {
+  property("Exercise 5.13 - b) take implementation via unfold") {
     val smallInteger = Gen.choose(-3, 25)
 
     forAll(smallInteger) { n =>
@@ -169,4 +169,13 @@ class ChapterFiveSolutionsProperties extends munit.ScalaCheckSuite:
         myLazyList.takeUsingUnfold(n).toList == xs.take(n)
       }
     } 
+  }
+
+  property("Exercise 5.13 - c) takeWhile implementation using unfold") {
+    val p: Int => Boolean = _ % 2 == 0
+
+    forAll { (xs: List[Int]) =>
+      val myLazyList: MyLazyList[Int] = MyLazyList(xs*)
+      myLazyList.takeWhileUsingUnfold(p).toList == xs.takeWhile(p)
+    }
   }

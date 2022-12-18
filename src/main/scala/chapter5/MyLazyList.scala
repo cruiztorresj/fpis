@@ -47,8 +47,7 @@ enum MyLazyList[+A]:
 	// 	if n < 0 then Empty
 	// 	else loop(Empty, this, n)
 	
-	// I've ended having to take a look at the provided answer.
-	// It turns out 
+	// I've had to take a look at the provided answer.
 	def take(n: Int): MyLazyList[A] =
 		this match
 			case Cons(h, t) if n > 1 => MyLazyList.cons(h(), t().take(n - 1))
@@ -172,6 +171,64 @@ enum MyLazyList[+A]:
 			// 																case _ => None
 			// 															)
 
+	// `takeWhile` using `unfold`
+	def takeWhileUsingUnfold(p: A => Boolean): MyLazyList[A] =
+		MyLazyList.unfold(this)(_ match
+			case Cons(hd, tl) if p(hd()) => Option(hd(), tl())
+			case Cons(hd, tl) if !p(hd()) => None 
+			case _ => None
+		)
+
+	// `zipWith` using `unfold`
+	def zipWithUsingUnfold[B, C](that: MyLazyList[B], f: (A, B) => C): MyLazyList[C] =
+		MyLazyList.unfold(this, that)((thisMyLazyList, thatLMyazyList) =>
+			(thisMyLazyList, thatLMyazyList) match {
+				case (Cons(ahd, atl), Cons(bhd, btl)) => Option(f(ahd(), bhd()), (atl(), btl()))
+				case _ => None
+			}
+		)
+
+	// `zipAll` using `unfold`
+	def zipAll[B](that: MyLazyList[B]): MyLazyList[(Option[A], Option[B])] =
+		MyLazyList.unfold(this, that)((thisMyLazyList, thatLMyazyList) =>
+			(thisMyLazyList, thatLMyazyList) match
+				case (Cons(ahd, atl), Empty) => Option((Some(ahd()), None), (atl(), Empty))
+				case (Empty, Cons(bhd, btl)) => Option((None, Some(bhd())), (Empty, btl())) 
+				case (Cons(ahd, atl), Cons(bhd, btl)) => Option((Some(ahd()), Some(bhd())), (atl(), btl())) 
+				case _ => None
+		)
+
+	// Exercise 5.14 (Hard) = Implement `startsWith` using functions you've written
+	// OK for this function I have had to check what's the actual behavior for the
+	// function with the same name in Scala standard library in order to know what's
+	// the expected result when dealing with empty lists.
+	def startsWith[A](prefix: MyLazyList[A]): Boolean =
+		this.zipAll(prefix).map(zipped =>
+			zipped match
+				case (Some(a), Some(b)) => a == b
+				case (_, None) => true
+				case (None, _) => false
+		).forAll(_ == true)
+
+	// Exercise 5.15
+	// Implement `tails` using `unfold`
+	def tails: MyLazyList[MyLazyList[A]] =
+		MyLazyList.unfold(this)(_ match
+			case Cons(hd, tl) => Option(Cons(hd, tl), tl())
+			case _ => None
+		)
+
+	// Exercise 5.16
+	// Generalizing `tails` to `scanRight`, returning a Lazy List of intermediate results.
+	// In this implementation
+	// `LazyList(1, 2, 3).scanRight(0)(_ + _).toList` results in `res0: List[Int] = List(6, 5, 3)`
+	// the accumulator itself (0 in this case) is missing, most likely this have been propagated from `tails`
+	// While comparing my solutions to the ones found in the book, it is now clear I forgot to append the
+	// final empty list at the end in `tails` function.
+	// This marks the end of chapter 5.
+	def scanRight[B](acc: => B)(f: (A, => B) => B): MyLazyList[B] =
+		this.tails.map(_.foldRight(acc)(f))
+
 object MyLazyList:
 	def cons[A](hd: => A, tl: => MyLazyList[A]): MyLazyList[A] =
 		lazy val head = hd
@@ -236,6 +293,7 @@ object MyLazyList:
 		 **/
 
 		// This works like a charm too, but I am not sure about its stack-safetyness.
+		// Edit: Indeed, it is stack-safe 
 		f(state) match
 			case Some(a, sNext) => cons(a, unfold(sNext)(f))
 			case _ => empty
@@ -266,8 +324,3 @@ object MyLazyList:
 			loop(0, 1, n)
 
 		unfold(1)(nth => Option(fib(nth), nth + 1))
-
-	// Exercise 5.13
-	// Several functions
-
-	// 
