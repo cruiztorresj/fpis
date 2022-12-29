@@ -1,5 +1,5 @@
 /*
-* MyLazyList.scala
+* Solutions.scala
 * Solutions to Chapter 6 Exercises.
 * Code skeleton can be found in the book.
 * December 22th, 2022
@@ -96,6 +96,7 @@ val randIntDouble: Rand[(Int, Double)] = both(randInt, double)
 val randDoubleInt: Rand[(Double, Int)] = both(doubleViaMap, randInt)
 
 // Exercise 6.7 -- Hard
+// a)
 def sequence[A](rs: List[Rand[A]]): Rand[List[A]] =
 	rs.foldRight[Rand[List[A]]](unit(List.empty[A]))((theRand, acc) => map2(theRand, acc, _ :: _))
 
@@ -103,6 +104,40 @@ def sequence[A](rs: List[Rand[A]]): Rand[List[A]] =
 // def ssequence[A](rs: List[Rand[A]]): Rand[List[A]] =
 // 	rs.foldRight[Rand[List[A]]](unit(List.empty[A]))(map2(_, _, _ :: _))
 
+// b)
 // The type signature have to change since the RNG shouldn't be passed as parameter to this function anymore
 def intsAlternateVersion(count: Int): Rand[List[Int]] =
 	sequence(List.fill(count)(randInt))
+
+// Exercise 6.8
+// a)
+def flatMap[A, B](r: Rand[A], f: A => Rand[B]): Rand[B] =
+	rng =>
+		val (a, rng2) = r(rng)
+		val (b, rng3) = f(a)(rng2)
+		(b, rng3)
+
+// b)
+def nonNegativeLessThan(n: Int): Rand[Int] =
+	flatMap(nonNegativeInt,
+		i =>
+			val mod = i % n
+			if i + (n - 1) - mod >= 0 then unit(mod)
+			else nonNegativeLessThan(n)
+	)
+
+// For appreciation purposes I am transcribing the solution for this problem previous to FlatMap.
+// def nonNegativeLessThanNoFlatMap(n: Int): Rand[Int] =
+// 	rng =>
+// 		val (i, rng2): (Int, RNG) = nonNegativeInt(rng)
+// 		val mod: Int = i % n
+// 		if i + (n - 1) - mod >= 0 then
+// 			(mod, rng2)
+// 		else
+// 			nonNegativeLessThanNoFlatMap(n)(rng2)
+
+// Exercise 6.9
+def mapViaFlatMap[A, B](s: Rand[A], f: A => B): Rand[B] = flatMap(s, a => unit(f(a)))
+
+def map2ViaFlatMap[A, B, C](ra: Rand[A], rb: Rand[B], f: (A, B) => C): Rand[C] =
+	flatMap(ra, a => flatMap(rb, b => unit(f(a, b))))
